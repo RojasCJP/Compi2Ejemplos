@@ -1,0 +1,2 @@
+while (True or False): print(123)
+end
