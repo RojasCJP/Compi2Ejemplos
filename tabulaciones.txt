@@ -1,2 +1,3 @@
-while (True or False): print(123)
-end
+3 + 5 * 8 - 12
+True or False
+123 > 53

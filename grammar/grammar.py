@@ -2,6 +2,14 @@ import ply.lex as lex
 import ply.yacc as yacc
 import sys
 
+from sym.Environment import *
+from abstract.Return import *
+
+from expressions.Literal import *
+from expressions.Logical import *
+from expressions.Relational import *
+from expressions.Arithmetic import *
+
 reservadas = {
     "println" : "PRINTLN",
     "print": "PRINT",
@@ -158,10 +166,18 @@ precedence = (
 
 def p_init(t):
     '''init            : instrucciones'''
+    t[0] = t[1]
 
 def p_instrucciones_lista(t):
     '''instrucciones    : instrucciones instruccion
                         | instruccion'''
+    if (len(t) != 2):
+        t[1].append(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = [t[1]]
+
+
 
 def p_instruccion(t):
     '''instruccion      : print_instr LINEANUEVA
@@ -178,7 +194,9 @@ def p_instruccion(t):
                         | while_state LINEANUEVA
                         | for_state LINEANUEVA
                         | nativas LINEANUEVA
-'''
+                        | expression LINEANUEVA'''
+    t[0] = t[1]
+
 
 
 def p_expression(t):
@@ -199,6 +217,57 @@ def p_expression(t):
                         | expression OR expression
                         | expression AND expression
                         | final_expression'''
+    if(len(t)==2):
+        t[0] = t[1]
+    elif (len(t)==3):
+        if(t[1] == '-'):
+            t[0] = Arithmetic(Literal(0,Type.INT, t.lineno(1), t.lexpos(0)),t[2],ArithmeticOption.MINUS,t.lineno(1), t.lexpos(0))
+        else:
+            t[0] = Logical(t[2],Literal(True, Type.BOOL, t.lineno(1), t.lexpos(0)),LogicOption.NOT, t.lineno(1), t.lexpos(0))
+    else:
+        if t[2] == "+":
+            t[0] = Arithmetic(t[1], t[3], ArithmeticOption.PLUS,
+                              t.lineno(1), t.lexpos(0))
+        elif t[2] == "-":
+            t[0] = Arithmetic(
+                t[1], t[3], ArithmeticOption.MINUS, t.lineno(1), t.lexpos(0))
+        elif t[2] == "*":
+            t[0] = Arithmetic(
+                t[1], t[3], ArithmeticOption.TIMES, t.lineno(1), t.lexpos(0))
+        elif t[2] == "/":
+            t[0] = Arithmetic(t[1], t[3], ArithmeticOption.DIV,
+                              t.lineno(1), t.lexpos(0))
+        elif t[2] == "^":
+            t[0] = Arithmetic(t[1], t[3], ArithmeticOption.RAISED,
+                              t.lineno(1), t.lexpos(0))
+        elif t[2] == "%":
+            t[0] = Arithmetic(
+                t[1], t[3], ArithmeticOption.MODULE, t.lineno(1), t.lexpos(0))
+        elif t[2] == "or":
+            t[0] = Logical(t[1], t[3], LogicOption.OR,
+                           t.lineno(1), t.lexpos(0))
+        elif t[2] == "and":
+            t[0] = Logical(t[1], t[3], LogicOption.AND,
+                           t.lineno(1), t.lexpos(0))
+        elif t[2] == "<":
+            t[0] = Relational(t[1], t[3], RelationalOption.LESS,
+                              t.lineno(1), t.lexpos(0))
+        elif t[2] == ">":
+            t[0] = Relational(
+                t[1], t[3], RelationalOption.GREATER, t.lineno(1), t.lexpos(0))
+        elif t[2] == "<=":
+            t[0] = Relational(
+                t[1], t[3], RelationalOption.LESSEQUAL, t.lineno(1), t.lexpos(0))
+        elif t[2] == ">=":
+            t[0] = Relational(
+                t[1], t[3], RelationalOption.GREATEREQUAL, t.lineno(1), t.lexpos(0))
+        elif t[2] == "==":
+            t[0] = Relational(t[1], t[3], RelationalOption.EQUAL,
+                              t.lineno(1), t.lexpos(0))
+        elif t[2] == "!=":
+            t[0] = Relational(
+                t[1], t[3], RelationalOption.DISTINCT, t.lineno(1), t.lexpos(0))
+
 
 def p_final_expression(t):
     '''final_expression     : PARIZQ expression PARDER
@@ -212,6 +281,22 @@ def p_final_expression(t):
                             | FALSE
                             | call_function
                             | nativas'''
+    if len(t) == 2:
+        if t.slice[1].type == "ENTERO":
+            t[0] = Literal(t[1], Type.INT, t.lineno(1), t.lexpos(0))
+        if t.slice[1].type == "DECIMAL":
+            t[0] = Literal(t[1], Type.FLOAT, t.lineno(1), t.lexpos(0))
+        elif t.slice[1].type == "FALSE":
+            t[0] = Literal(False, Type.BOOL, t.lineno(1), t.lexpos(0))
+        elif t.slice[1].type == "TRUE":
+            t[0] = Literal(True, Type.BOOL, t.lineno(1), t.lexpos(0))
+        elif t.slice[1].type == "CADENA":
+            t[0] = Literal(str(t[1]), Type.STRING, t.lineno(1), t.lexpos(0))
+    else:
+        if t.slice[1].type == "PARIZQ":
+            t[0] = t[2]
+        else:
+            t[0] = Literal(t[2], Type.ARRAY, t.lineno(1), t.lexpos(0))
 
 def p_nativas(t):
     '''nativas          : UPPER PARIZQ expression PARDER
@@ -251,7 +336,12 @@ def p_call_function_instr(t):
 def p_exp_list_instr(t):
     '''exp_list         : exp_list COMA expression
                         | expression'''
-
+    if len(t) == 2:
+        t[0] = [t[1]]
+    else:
+        t[1].append(t[3])
+        t[0] = t[1]
+    
 def p_index_list_instr(t):
     '''index_list       : index_list CORCHETEIZQ expression CORCHETEDER
                         | CORCHETEIZQ expression CORCHETEDER'''

@@ -364,3 +364,20 @@ class Generator:
         self.add_expression(contador, '0', '', '')
         self.add_end_func()
         self.in_natives = False
+
+    def operaciones(self, left, right, op):
+        try:
+            if(op == '+'):
+                return left + right
+            elif(op == '-'):
+                return left - right
+            elif(op == '*'):
+                return left * right
+            elif(op == '/'):
+                return left / right
+            elif(op == '%'):
+                return left % right
+            else:
+                return left
+        except:
+            return left
