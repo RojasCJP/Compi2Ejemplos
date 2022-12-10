@@ -5,6 +5,8 @@ import sys
 from sym.Environment import *
 from abstract.Return import *
 
+from instructions.nativas.Print import *
+
 from expressions.Literal import *
 from expressions.Logical import *
 from expressions.Relational import *
