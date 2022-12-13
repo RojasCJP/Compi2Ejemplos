@@ -5,7 +5,6 @@ def primos(maximo):
         for i in range(element):
             if i == 0 : continue
             resultado = element%i 
-            # print(resultado)
             if(resultado == 0):
                 trigger += 1
         if trigger < 2:
