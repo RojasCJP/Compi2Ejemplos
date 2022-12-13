@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-var t0, t1, t2 float64;
+var t0 float64;
 var P, H float64;
 var stack [30101999]float64;
 var heap [30101999]float64;
@@ -13,23 +13,18 @@ var heap [30101999]float64;
 
 
 func main(){
-	t0=5*8;
-	t1=3+t0;
-	t2=t1-12;
-	/* inicio de expression logica */
-	goto L0;
-	/* goto para evitar errores */
-	goto L2;
-	L2:
-	goto L1;
-	/* goto para evitar errores */
-	goto L0;
-	/* finalizo la expression logica */
+	/* compilacion de valor de la variable */
+	/* fin de compilacion de valor de variable */
+	stack[int(0)]=123;
 	
-	/* inicio de expression realcional */
-	if 123 > 53 {goto L3;}
-	goto L4;
-	/* fin de la expression relacional */
+	/* esto es un acceso */
+	t0=stack[int(0)];
+	/* fin de compilacion de acceso */
 	
+	fmt.Printf("%d", int(t0));
+	fmt.Printf("%c", int(32));
+	fmt.Printf("%d", int(123124));
+	fmt.Printf("%c", int(32));
+	fmt.Printf("%c", int(10));
 
 }

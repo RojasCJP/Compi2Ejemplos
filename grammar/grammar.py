@@ -6,11 +6,13 @@ from sym.Environment import *
 from abstract.Return import *
 
 from instructions.nativas.Print import *
+from instructions.variables.Declaration import *
 
 from expressions.Literal import *
 from expressions.Logical import *
 from expressions.Relational import *
 from expressions.Arithmetic import *
+from expressions.Access import *
 
 reservadas = {
     "println" : "PRINTLN",
@@ -294,6 +296,8 @@ def p_final_expression(t):
             t[0] = Literal(True, Type.BOOL, t.lineno(1), t.lexpos(0))
         elif t.slice[1].type == "CADENA":
             t[0] = Literal(str(t[1]), Type.STRING, t.lineno(1), t.lexpos(0))
+        elif t.slice[1].type == 'ID':
+            t[0] = Access(t[1], t.lineno(1), t.lexpos(0))
     else:
         if t.slice[1].type == "PARIZQ":
             t[0] = t[2]
@@ -310,9 +314,11 @@ def p_nativas(t):
 
 def p_print_instr(t):
     'print_instr    : PRINT PARIZQ exp_list PARDER'
+    t[0] = Print(t[3], t.lineno(1), t.lexpos(0), False)
 
 def p_println_instr(t):
     'println_instr  : PRINTLN PARIZQ exp_list PARDER'
+    t[0] = Print(t[3], t.lineno(1), t.lexpos(0), True)
 
 def p_tipo(t):
     '''tipo     : INT
@@ -324,9 +330,11 @@ def p_tipo(t):
 
 def p_asignacion_instr(t):
     '''asignacion_instr     : ID IGUAL expression'''
+    t[0] = Declaration(t[1], t[3], t.lineno(1), t.lexpos(0))
 
 def p_definicion_asignacion_instr(t):
     '''definicion_asignacion_instr  : ID  DOSP tipo IGUAL expression'''
+    t[0] = Declaration(t[1], t[5], t.lineno(1), t.lexpos(0))
 
 def p_asignacion_arreglo_instr(t):
     '''asignacion_arreglo_instr     : ID index_list IGUAL expression'''
