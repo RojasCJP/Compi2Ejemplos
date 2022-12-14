@@ -1,4 +1,8 @@
-a = 123
-b = a
-print(a)
-println(b)
+element = 1
+while (element < 10): println(element)
+element = element + 1
+end
+println("prueba string")
+def prueba(): println("buenas")
+end
+prueba()

@@ -7,12 +7,20 @@ from abstract.Return import *
 
 from instructions.nativas.Print import *
 from instructions.variables.Declaration import *
+from instructions.Statement import *
+from instructions.functions.Function import *
+from instructions.functions.Param import *
+from instructions.functions.ReturnST import *
+from instructions.loops.While import *
+from instructions.loops.Break import *
+from instructions.loops.Continue import *
 
 from expressions.Literal import *
 from expressions.Logical import *
 from expressions.Relational import *
 from expressions.Arithmetic import *
 from expressions.Access import *
+from expressions.CallFunc import *
 
 reservadas = {
     "println" : "PRINTLN",
@@ -342,6 +350,10 @@ def p_asignacion_arreglo_instr(t):
 def p_call_function_instr(t):
     '''call_function    : ID PARIZQ PARDER
                         | ID PARIZQ exp_list PARDER'''
+    if len(t) == 4:
+        t[0] = CallFunc(t[1], [], t.lineno(1), t.lexpos(0))
+    else:
+        t[0] = CallFunc(t[1], t[3], t.lineno(1), t.lexpos(0))
 
 def p_exp_list_instr(t):
     '''exp_list         : exp_list COMA expression
@@ -358,16 +370,30 @@ def p_index_list_instr(t):
 
 def p_statement(t):
     '''statement        : instrucciones'''
+    t[0] = Statement(t[1], t.lineno(1), t.lexpos(0))
 
 def p_declare_function(t):
     '''declare_function     : DEF ID PARIZQ dec_params PARDER DOSP statement END
                             | DEF ID PARIZQ PARDER DOSP statement END'''
+    if len(t) == 8:
+        t[0] = Function(t[2], [], Type.NULL, t[6], t.lineno(1), t.lexpos(0))
+    else:
+        t[0] = Function(t[2], t[4], Type.NULL, t[7], t.lineno(1), t.lexpos(0))
 
 def p_dec_params(t):
     '''dec_params :   dec_params COMA ID DOSP tipo
                     | dec_params COMA ID
                     | ID DOSP tipo
                     | ID'''
+    if len(t) == 2:
+        t[0] = [Param(t[1],Type.LIST,t.lineno(1), t.lexpos(0))]
+    elif len(t) == 4:
+        if(t.slice[1].type == 'ID'):
+            t[0] = [Param(t[1],t[3],t.lineno(1), t.lexpos(0))]
+        else:
+            t[0] = t[1].append(Param(t[3],Type.LIST,t.lineno(1), t.lexpos(0)))
+    else:
+        t[0] = t[1].append(Param(t[3],t[5],t.lineno(1), t.lexpos(0)))
 
 def p_if_state(t):
     '''if_state     : IF expression DOSP statement END
@@ -382,6 +408,7 @@ def p_else_if_list(t):
 
 def p_while_state(t):
     '''while_state      : WHILE expression DOSP statement END'''
+    t[0] = While(t[2], t[4], t.lineno(1), t.lexpos(0))
 
 def p_for_state(t):
     '''for_state        : FOR ID IN expression DOSP expression DOSP statement END
@@ -389,13 +416,19 @@ def p_for_state(t):
                     
 def p_break(t):
     '''break_state      : BREAK'''
+    t[0] = Break(t.lineno(1), t.lexpos(0))
 
 def p_continue(t):
     '''continue_state      : CONTINUE'''
+    t[0] = Continue(t.lineno(1), t.lexpos(0))
 
 def p_return(t):
     '''return_state     : RETURN
                         | RETURN expression'''
+    if(len(t) == 2):
+        t[0] = ReturnSt(None, t.lineno(1), t.lexpos(0))
+    else:
+        t[0] = ReturnSt(t[2], t.lineno(1), t.lexpos(0))
 
 parser = yacc.yacc()
 

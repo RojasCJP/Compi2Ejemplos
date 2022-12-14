@@ -9,6 +9,7 @@ class Type(Enum):
     LIST = 5
     STRUCT = 6
     UNDEFINED = 7
+    CHAR = 8
 
     RETURN_ST = 8
     BREAK_ST = 9
