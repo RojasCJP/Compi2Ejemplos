@@ -89,7 +89,7 @@ def primos(maximo):
                 continue
             resultado = element%i 
             if(resultado == 0):
-                trigger += 1
+                trigger = trigger + 1
         if trigger < 2:
             print(element)
 
