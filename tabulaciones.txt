@@ -3,6 +3,6 @@ while (element < 10): println(element)
 element = element + 1
 end
 println("prueba string")
-def prueba(): println("buenas")
+def prueba(): print("buenas")
 end
 prueba()
