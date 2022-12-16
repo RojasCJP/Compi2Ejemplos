@@ -381,3 +381,95 @@ class Generator:
                 return left
         except:
             return left
+
+    def f_to_upper(self):
+        if(self.to_upper):
+            return
+        self.to_upper = True
+        self.in_natives = True
+
+        self.add_begin_func('to_upper')
+        # Label para salir de la funcion
+        returnLbl = self.new_label()
+        # Label para la comparacion para buscar fin de cadena
+        compareLbl = self.new_label()
+
+        # Temporal puntero a Stack
+        tempP = self.add_temp()
+
+        # Temporal puntero a Heap
+        tempH = self.add_temp()
+
+        self.add_expression(tempP, 'P', '1', '+')
+
+        self.get_stack(tempH, tempP)
+
+        # Temporal para comparark
+        tempC = self.add_temp()
+
+        self.put_label(compareLbl)
+
+        self.get_heap(tempC, tempH)
+
+        self.add_if(tempC, '-1', '==', returnLbl)
+
+        temp = self.add_temp()
+        pass_label = self.new_label()
+        self.add_if(tempC, '97', '<', pass_label)
+        self.add_if(tempC, '122', '>', pass_label)
+        self.add_expression(temp, tempC, '32', '-')
+        self.set_heap(tempH, temp)
+        self.put_label(pass_label)
+        self.add_expression(tempH, tempH, '1', '+')
+
+        self.add_goto(compareLbl)
+
+        self.put_label(returnLbl)
+        self.add_end_func()
+        self.in_natives = False
+
+    def f_to_lower(self):
+        if(self.to_lower):
+            return
+        self.to_lower = True
+        self.in_natives = True
+
+        self.add_begin_func('to_lower')
+        # Label para salir de la funcion
+        returnLbl = self.new_label()
+        # Label para la comparacion para buscar fin de cadena
+        compareLbl = self.new_label()
+
+        # Temporal puntero a Stack
+        tempP = self.add_temp()
+
+        # Temporal puntero a Heap
+        tempH = self.add_temp()
+
+        self.add_expression(tempP, 'P', '1', '+')
+
+        self.get_stack(tempH, tempP)
+
+        # Temporal para comparark
+        tempC = self.add_temp()
+
+        self.put_label(compareLbl)
+
+        self.get_heap(tempC, tempH)
+
+        self.add_if(tempC, '-1', '==', returnLbl)
+
+        temp = self.add_temp()
+        pass_label = self.new_label()
+        self.add_if(tempC, '65', '<', pass_label)
+        self.add_if(tempC, '90', '>', pass_label)
+        self.add_expression(temp, tempC, '32', '+')
+        self.set_heap(tempH, temp)
+        self.put_label(pass_label)
+        self.add_expression(tempH, tempH, '1', '+')
+
+        self.add_goto(compareLbl)
+
+        self.put_label(returnLbl)
+        self.add_end_func()
+        self.in_natives = False
