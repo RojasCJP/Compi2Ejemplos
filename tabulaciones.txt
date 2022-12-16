@@ -1,8 +1,2 @@
-element = 1
-while (element < 10): println(element)
-element = element + 1
-end
-println("prueba string")
-def prueba(): print("buenas")
-end
-prueba()
+println(upper("hola"))
+println(len("holaaaa"))

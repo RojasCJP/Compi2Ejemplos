@@ -14,6 +14,9 @@ from instructions.functions.ReturnST import *
 from instructions.loops.While import *
 from instructions.loops.Break import *
 from instructions.loops.Continue import *
+from instructions.nativas.Upper import *
+from instructions.nativas.Lower import *
+from instructions.nativas.Len import *
 
 from expressions.Literal import *
 from expressions.Logical import *
@@ -306,6 +309,10 @@ def p_final_expression(t):
             t[0] = Literal(str(t[1]), Type.STRING, t.lineno(1), t.lexpos(0))
         elif t.slice[1].type == 'ID':
             t[0] = Access(t[1], t.lineno(1), t.lexpos(0))
+        elif t.slice[1].type == 'nativas':
+            t[0] = t[1]
+        elif t.slice[1].type == 'call_function':
+            t[0] = t[1]
     else:
         if t.slice[1].type == "PARIZQ":
             t[0] = t[2]
@@ -319,6 +326,12 @@ def p_nativas(t):
                         | FLOAT PARIZQ expression PARDER
                         | LEN PARIZQ expression PARDER
                         '''
+    if(t.slice[1].type == "UPPER"):
+        t[0] = Upper(t[3], t.lineno(1), t.lexpos(0))        
+    elif(t.slice[1].type == 'LOWER'):
+        t[0] = Lower(t[3], t.lineno(1), t.lexpos(0))
+    elif(t.slice[1].type == 'LEN'):
+        t[0] = Len(t.lineno(1), t.lexpos(0), t[3])
 
 def p_print_instr(t):
     'print_instr    : PRINT PARIZQ exp_list PARDER'

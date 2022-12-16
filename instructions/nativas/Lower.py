@@ -3,7 +3,7 @@ from abstract.Instruction import *
 from abstract.Return import *
 from sym.Generator import *
 
-class ToLower(Instruction):
+class Lower(Instruction):
 
     def __init__(self, value, line, column):
         Instruction.__init__(self, line, column)
