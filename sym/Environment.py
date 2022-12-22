@@ -37,7 +37,7 @@ class Environment:
                 array_return.append(self.get_items_array(element))
             else:
                 element_value = element.execute(env)
-                if element_value.type != Type.ARRAY:
+                if element_value.type != Type.LIST:
                     array_return.append(element_value.value)
                 else:
                     array_return.append(

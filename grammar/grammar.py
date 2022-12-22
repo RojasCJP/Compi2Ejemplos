@@ -317,7 +317,7 @@ def p_final_expression(t):
         if t.slice[1].type == "PARIZQ":
             t[0] = t[2]
         else:
-            t[0] = Literal(t[2], Type.ARRAY, t.lineno(1), t.lexpos(0))
+            t[0] = Literal(t[2], Type.LIST, t.lineno(1), t.lexpos(0))
 
 def p_nativas(t):
     '''nativas          : UPPER PARIZQ expression PARDER
@@ -399,12 +399,12 @@ def p_dec_params(t):
                     | ID DOSP tipo
                     | ID'''
     if len(t) == 2:
-        t[0] = [Param(t[1],Type.LIST,t.lineno(1), t.lexpos(0))]
+        t[0] = [Param(t[1],Type.STRING,t.lineno(1), t.lexpos(0))]
     elif len(t) == 4:
         if(t.slice[1].type == 'ID'):
             t[0] = [Param(t[1],t[3],t.lineno(1), t.lexpos(0))]
         else:
-            t[0] = t[1].append(Param(t[3],Type.LIST,t.lineno(1), t.lexpos(0)))
+            t[0] = t[1].append(Param(t[3],Type.STRING,t.lineno(1), t.lexpos(0)))
     else:
         t[0] = t[1].append(Param(t[3],t[5],t.lineno(1), t.lexpos(0)))
 

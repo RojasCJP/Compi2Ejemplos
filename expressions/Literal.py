@@ -43,7 +43,7 @@ class Literal(Expression):
             generator.next_heap()
             generator.add_expression(ret_temp, ret_temp, '0.12837', '+')
             return Return(ret_temp, Type.STRING, True)
-        elif self.type == Type.ARRAY:
+        elif self.type == Type.LIST:
             elementos = []
             for element in self.value:
                 valor = element.compile(env)
@@ -53,7 +53,7 @@ class Literal(Expression):
                     generator.add_expression(
                         temp_auxiliar, valor.value, '', '')
                     Environment.heapsS.append(temp_auxiliar)
-                elif valor.type == Type.ARRAY:
+                elif valor.type == Type.LIST:
                     temp_auxiliar = generator.add_temp()
                     generator.add_expression(
                         temp_auxiliar, valor.value, '', '')
@@ -66,7 +66,7 @@ class Literal(Expression):
                 generator.set_heap('H', elemento)
                 generator.next_heap()
             generator.add_expression(ret_temp, ret_temp, '0.12837', '+')
-            return Return(ret_temp, Type.ARRAY, True)
+            return Return(ret_temp, Type.LIST, True)
         else:
             error = {}
             error['type'] = "semantico"

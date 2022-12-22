@@ -25,7 +25,7 @@ class CallFunc(Expression):
                 aux = 0
                 for param in param_values:
                     aux = aux + 1
-                    generator.set_stack(temp. param.value)
+                    generator.set_stack(temp, param.value)
                     if aux != len(param_values):
                         generator.add_expression(temp,temp,'1','+')
                 generator.new_env(size)
